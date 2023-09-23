@@ -6,7 +6,7 @@ from rest_framework import serializers
 from core.models import (
     Recipe,
     Tag,
-    Ingerdiant,
+    Ingredient,
     )
 
 
@@ -14,7 +14,7 @@ class IngredientSerializer(serializers.ModelSerializer):
     """Serializer for ingredients."""
 
     class Meta:
-        model = Ingerdiant
+        model = Ingredient
         fields = ['id', 'name']
         read_only_fields = ['id']
 
@@ -54,7 +54,7 @@ class RecipeSerializers(serializers.ModelSerializer):
         """Handle getting or creating an ingrediant as needed."""
         auth_user = self.context['request'].user
         for ingrediant in ingerdiants:
-            ingrediant.obj, create = Ingerdiant.objects.get_or_create(
+            ingrediant.obj, create = Ingredient.objects.get_or_create(
                 user=auth_user,
                 **ingrediant,
             )

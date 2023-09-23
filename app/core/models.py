@@ -56,7 +56,7 @@ class Recipe(models.Model):
     price = models.DecimalField(max_digits=5, decimal_places=2)
     link = models.CharField(max_length=255, blank=True)
     tag = models.ManyToManyField('Tag')
-    ingerdiant = models.ManyToManyField('Ingerdiant')
+    ingredient = models.ManyToManyField('Ingredient')
 
     def __str__(self):
         return self.title
@@ -73,13 +73,13 @@ class Tag(models.Model):
         return self.name
     
 
-class Ingerdiant(models.Model):
-    """Ingeriant for recipes."""
-    name = models.CharField(max_length=225)
+class Ingredient(models.Model):
+    """Ingredient for recipes."""
+    name = models.CharField(max_length=256)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    
+
     def __str__(self):
         return self.name

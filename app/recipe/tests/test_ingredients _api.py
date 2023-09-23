@@ -8,7 +8,7 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Ingerdiant
+from core.models import Ingredient
 
 from recipe.serializers import IngredientSerializer
 
@@ -47,12 +47,12 @@ class PrivateIngredientsApiTests(TestCase):
 
     def test_retrieve_ingredients(self):
         """Test retrieving a list of ingredients."""
-        Ingerdiant.objects.create(user=self.user, name='Kale')
-        Ingerdiant.objects.create(user=self.user, name='Vanilla')
+        Ingredient.objects.create(user=self.user, name='Kale')
+        Ingredient.objects.create(user=self.user, name='Vanilla')
 
         res = self.client.get(INGREDIENTS_URL)
 
-        ingredients = Ingerdiant.objects.all().order_by('-name')
+        ingredients = Ingredient.objects.all().order_by('-name')
         serializer = IngredientSerializer(ingredients, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
@@ -60,8 +60,8 @@ class PrivateIngredientsApiTests(TestCase):
     def test_ingredients_limited_to_user(self):
         """Test list of ingredients is limited to authenticated user."""
         user2 = create_user(email='user2@example.com')
-        Ingerdiant.objects.create(user=user2, name='Salt')
-        ingredient = Ingerdiant.objects.create(user=self.user, name='Pepper')
+        Ingredient.objects.create(user=user2, name='Salt')
+        ingredient = Ingredient.objects.create(user=self.user, name='Pepper')
 
         res = self.client.get(INGREDIENTS_URL)
 
@@ -72,7 +72,7 @@ class PrivateIngredientsApiTests(TestCase):
 
     def test_update_ingredient(self):
         """Test updating an Ingredient"""
-        ingredient = Ingerdiant.objects.create(user=self.user, name='Cilantro')
+        ingredient = Ingredient.objects.create(user=self.user, name='Cilantro')
 
         payload = {'name': 'Coriander'}
         url = detail_url(ingredient.id)
@@ -84,11 +84,11 @@ class PrivateIngredientsApiTests(TestCase):
 
     def test_delete_ingredient(self):
         """Test deleting an ingredient."""
-        ingredient = Ingerdiant.objects.create(user=self.user, name='Lettuce')
+        ingredient = Ingredient.objects.create(user=self.user, name='Lettuce')
 
         url = detail_url(ingredient.id)
         res = self.client.delete(url)
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        ingredients = Ingerdiant.objects.filter(user=self.user)
+        ingredients = Ingredient.objects.filter(user=self.user)
         self.assertFalse(ingredients.exists())
